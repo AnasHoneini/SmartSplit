@@ -12,12 +12,12 @@ const {
 
 const router = express.Router();
 
-router.post("/createGroup", createGroup);
-router.get("/getAllGroups", getAllGroups);
-router.get("/getGroupByName/:groupName", getGroupByName);
-router.put("/updateGroupByName/:groupName", updateGroupByName);
-router.delete("/deleteGroupByName/:groupName", deleteGroupByName);
-router.get("/getMembersByGroupId/:groupId", getMembersByGroupId);
-router.post("/addMemberToGroup", addMemberToGroup);
+router.post("/group", createGroup);
+router.get("/group", getAllGroups);
+router.get("/group/:groupName", getGroupByName);
+router.put("/group/:groupName", updateGroupByName);
+router.delete("/group/:groupName", deleteGroupByName);
+router.get("/group/:groupId", getMembersByGroupId);
+router.post("/addGroup", addMemberToGroup);
 
 module.exports = router;

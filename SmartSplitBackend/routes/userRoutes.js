@@ -10,10 +10,10 @@ const {
   updateUserByEmail,
 } = require("../controllers/userController");
 
-router.post("/createUser", createUser);
-router.get("/getAllUsers", getAllUsers);
-router.get("/getUserByEmail/:email", getUserByEmail);
-router.put("/updateUserByEmail/:email", updateUserByEmail);
-router.delete("/deleteUserByEmail/:email", deleteUserByEmail);
+router.post("/users", createUser);
+router.get("/users", getAllUsers);
+router.get("/users/:email", getUserByEmail);
+router.put("/users/:email", updateUserByEmail);
+router.delete("/users/:email", deleteUserByEmail);
 
 module.exports = router;

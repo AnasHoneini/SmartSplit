@@ -15,10 +15,10 @@ app.get("/", (req, res) => {
   res.send({ status: "Started" });
 });
 
-app.use("/api/users", userRoutes);
-app.use("/api/items", itemRoutes);
-app.use("/api/groups", groupRoutes);
-app.use("/api/receipts", receiptRoutes);
+app.use("/api", userRoutes);
+app.use("/api", itemRoutes);
+app.use("/api", groupRoutes);
+app.use("/api", receiptRoutes);
 
 app.listen(5001, () => {
   console.log("Server is running on port 5001");

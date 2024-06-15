@@ -1,35 +1,38 @@
 const Group = require("../models/groupModel");
 const UserGroup = require("../models/userGroupModel");
 const User = require("../models/userModel");
+const {
+  validateCreateGroup,
+  validateAddMemberToGroup,
+  validate,
+} = require("../middleware/validator");
 
-const createGroup = async (req, res) => {
-  const { groupName, description, profilePicture, createdBy, isActive } =
-    req.body;
+const createGroup = [
+  validateCreateGroup,
+  validate,
+  async (req, res) => {
+    const { groupName, description, profilePicture, createdBy, isActive } =
+      req.body;
 
-  if (!groupName || !createdBy) {
-    return res
-      .status(400)
-      .json({ message: "Group name and creator ID are required!" });
-  }
+    try {
+      const group = await Group.create({
+        groupName,
+        description,
+        profilePicture,
+        createdBy,
+        isActive,
+      });
 
-  try {
-    const group = await Group.create({
-      groupName,
-      description,
-      profilePicture,
-      createdBy,
-      isActive,
-    });
+      await UserGroup.create({ userId: createdBy, groupId: group._id });
 
-    await UserGroup.create({ userId: createdBy, groupId: group._id });
-
-    return res
-      .status(201)
-      .json({ message: "Group created successfully!", group });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
+      return res
+        .status(201)
+        .json({ message: "Group created successfully!", group });
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+  },
+];
 
 const getAllGroups = async (req, res) => {
   try {
@@ -110,47 +113,45 @@ const getMembersByGroupId = async (req, res) => {
   }
 };
 
-const addMemberToGroup = async (req, res) => {
-  const { userId, groupId } = req.body;
+const addMemberToGroup = [
+  validateAddMemberToGroup,
+  validate,
+  async (req, res) => {
+    const { userId, groupId } = req.body;
 
-  if (!userId || !groupId) {
-    return res
-      .status(400)
-      .json({ message: "User ID and Group ID are required!" });
-  }
+    try {
+      const group = await Group.findById(groupId).exec();
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
 
-  try {
-    const group = await Group.findById(groupId).exec();
-    if (!group) {
-      return res.status(404).json({ message: "Group not found" });
-    }
+      const user = await User.findById(userId).exec();
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-    const user = await User.findById(userId).exec();
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+      const existingUserGroup = await UserGroup.findOne({
+        userId,
+        groupId,
+      }).exec();
+      if (existingUserGroup) {
+        return res
+          .status(400)
+          .json({ message: "User is already a member of the group" });
+      }
 
-    const existingUserGroup = await UserGroup.findOne({
-      userId,
-      groupId,
-    }).exec();
-    if (existingUserGroup) {
+      const userGroup = await UserGroup.create({ userId, groupId });
+
+      await group.save();
+
       return res
-        .status(400)
-        .json({ message: "User is already a member of the group" });
+        .status(201)
+        .json({ message: "Member added to group successfully!", userGroup });
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
     }
-
-    const userGroup = await UserGroup.create({ userId, groupId });
-
-    await group.save();
-
-    return res
-      .status(201)
-      .json({ message: "Member added to group successfully!", userGroup });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
+  },
+];
 
 module.exports = {
   createGroup,

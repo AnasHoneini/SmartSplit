@@ -1,27 +1,28 @@
 const Item = require("../models/itemModel");
+const { validateCreateItem, validate } = require("../middleware/validator");
 
-const createItem = async (req, res) => {
-  const { userId, receiptId, name, price, quantity } = req.body;
+const createItem = [
+  validateCreateItem,
+  validate,
+  async (req, res) => {
+    const { userId, receiptId, name, price, quantity } = req.body;
 
-  if (!userId || !receiptId || !name || !price || !quantity) {
-    return res.status(400).json({ message: "All fields are required!" });
-  }
-
-  try {
-    const item = await Item.create({
-      userId,
-      receiptId,
-      name,
-      price,
-      quantity,
-    });
-    return res
-      .status(201)
-      .json({ message: "Item created successfully!", item });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
+    try {
+      const item = await Item.create({
+        userId,
+        receiptId,
+        name,
+        price,
+        quantity,
+      });
+      return res
+        .status(201)
+        .json({ message: "Item created successfully!", item });
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+  },
+];
 
 const getAllItems = async (req, res) => {
   try {

@@ -9,10 +9,10 @@ const {
 
 const router = express.Router();
 
-router.post("/createReceipt", createReceipt);
-router.get("/getAllReceipts", getAllReceipts);
-router.get("/getReceiptById/:receiptId", getReceiptById);
-router.put("/updateReceiptById/:receiptId", updateReceiptById);
-router.delete("/deleteReceiptById/:receiptId", deleteReceiptById);
+router.post("/receipt", createReceipt);
+router.get("/receipt", getAllReceipts);
+router.get("/receipt/:receiptId", getReceiptById);
+router.put("/receipt/:receiptId", updateReceiptById);
+router.delete("/receipt/:receiptId", deleteReceiptById);
 
 module.exports = router;

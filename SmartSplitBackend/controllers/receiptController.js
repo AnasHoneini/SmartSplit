@@ -1,29 +1,26 @@
 const Receipt = require("../models/receiptModel");
 const GroupReceipt = require("../models/groupReceiptModel");
+const { validateCreateReceipt, validate } = require("../middleware/validator");
 
-const createReceipt = async (req, res) => {
-  const { restaurantName, groupId } = req.body;
+const createReceipt = [
+  validateCreateReceipt,
+  validate,
+  async (req, res) => {
+    const { restaurantName, groupId } = req.body;
 
-  if (!restaurantName || !groupId) {
-    return res.status(400).json({
-      message: "Restaurant name and group ID are required!",
-    });
-  }
+    try {
+      const receipt = await Receipt.create({ restaurantName });
 
-  try {
-    const receipt = await Receipt.create({
-      restaurantName,
-    });
+      await GroupReceipt.create({ receiptId: receipt._id, groupId });
 
-    await GroupReceipt.create({ receiptId: receipt._id, groupId: groupId });
-
-    return res
-      .status(201)
-      .json({ message: "Receipt created successfully!", receipt });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
+      return res
+        .status(201)
+        .json({ message: "Receipt created successfully!", receipt });
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+  },
+];
 
 const getAllReceipts = async (req, res) => {
   try {
