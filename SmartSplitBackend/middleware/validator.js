@@ -92,7 +92,7 @@ const validateCreateGroup = [
     .trim()
     .escape()
     .notEmpty()
-    .withMessage("Created by ID is required"),
+    .withMessage("Created by Email is required"),
   check("isActive")
     .optional()
     .isBoolean()
@@ -100,12 +100,12 @@ const validateCreateGroup = [
 ];
 
 const validateAddMemberToGroup = [
-  check("userId").trim().escape().notEmpty().withMessage("User ID is required"),
-  check("groupId")
+  check("userEmail").isEmail().withMessage("Valid email is required"),
+  check("groupName")
     .trim()
     .escape()
     .notEmpty()
-    .withMessage("Group ID is required"),
+    .withMessage("Group Name is required"),
 ];
 
 const validate = (req, res, next) => {

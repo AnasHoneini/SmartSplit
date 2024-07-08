@@ -15,6 +15,10 @@ const createGroup = [
       req.body;
 
     try {
+      const user = await User.findOne({ email: createdBy });
+      if (!user) {
+        return res.status(404).send({ message: "User not found" });
+      }
       const group = await Group.create({
         groupName,
         description,
@@ -23,7 +27,7 @@ const createGroup = [
         isActive,
       });
 
-      await UserGroup.create({ userId: createdBy, groupId: group._id });
+      await UserGroup.create({ userEmail: createdBy, groupName: groupName });
 
       return res
         .status(201)
@@ -59,7 +63,9 @@ const getGroupByName = async (req, res) => {
 
 const updateGroupByName = async (req, res) => {
   try {
-    const group = await Group.findOne({}).exec();
+    const group = await Group.findOne({
+      groupName: req.params.groupName,
+    }).exec();
     if (!group) {
       return res.status(404).json({ message: "Group not found" });
     }
@@ -79,7 +85,9 @@ const updateGroupByName = async (req, res) => {
 
 const deleteGroupByName = async (req, res) => {
   try {
-    const group = await Group.findOne({}).exec();
+    const group = await Group.findOne({
+      groupName: req.params.groupName,
+    }).exec();
     if (!group) {
       return res.status(404).json({ message: "Group not found" });
     }
@@ -94,20 +102,35 @@ const deleteGroupByName = async (req, res) => {
   }
 };
 
-const getMembersByGroupId = async (req, res) => {
+const getMembersByGroupName = async (req, res) => {
   try {
-    const group = await Group.findById(req.params.groupId).exec();
+    const group = await Group.findOne({
+      groupName: req.params.groupName,
+    }).exec();
     if (!group) {
       return res.status(404).json({ message: "Group not found" });
     }
 
     const userGroups = await UserGroup.find({
-      groupId: req.params.groupId,
+      groupName: req.params.groupName,
     }).exec();
-    const userIds = userGroups.map((ug) => ug.userId);
-    const users = await User.find({ _id: { $in: userIds } }).exec();
+    const userEmails = userGroups.map((ug) => ug.userEmail);
+    const users = await User.find({ email: { $in: userEmails } }).exec();
 
     return res.status(200).json(users);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+const getUserGroups = async (req, res) => {
+  try {
+    const userGroups = await UserGroup.find({
+      userEmail: req.params.userEmail,
+    }).exec();
+    const groupNames = userGroups.map((ug) => ug.groupName);
+    const groups = await Group.find({ groupName: { $in: groupNames } }).exec();
+
+    return res.status(200).json(groups);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -117,22 +140,22 @@ const addMemberToGroup = [
   validateAddMemberToGroup,
   validate,
   async (req, res) => {
-    const { userId, groupId } = req.body;
+    const { userEmail, groupName } = req.body;
 
     try {
-      const group = await Group.findById(groupId).exec();
+      const group = await Group.findOne({ groupName }).exec();
       if (!group) {
         return res.status(404).json({ message: "Group not found" });
       }
 
-      const user = await User.findById(userId).exec();
+      const user = await User.findOne({ email: userEmail }).exec();
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
       const existingUserGroup = await UserGroup.findOne({
-        userId,
-        groupId,
+        groupName,
+        userEmail,
       }).exec();
       if (existingUserGroup) {
         return res
@@ -140,9 +163,8 @@ const addMemberToGroup = [
           .json({ message: "User is already a member of the group" });
       }
 
-      const userGroup = await UserGroup.create({ userId, groupId });
-
-      await group.save();
+      const userGroup = new UserGroup({ groupName, userEmail });
+      await userGroup.save();
 
       return res
         .status(201)
@@ -159,6 +181,7 @@ module.exports = {
   getGroupByName,
   updateGroupByName,
   deleteGroupByName,
-  getMembersByGroupId,
+  getMembersByGroupName,
   addMemberToGroup,
+  getUserGroups,
 };

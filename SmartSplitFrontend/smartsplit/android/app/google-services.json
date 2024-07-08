@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "14542119832",
+    "project_id": "smart-split-89fa0",
+    "storage_bucket": "smart-split-89fa0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:14542119832:android:ca58a1593305c8eefc41ed",
+        "android_client_info": {
+          "package_name": "com.example.smartsplit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdq4fS9S8aHvsfvxZH89dr-WfP2SOA17o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
