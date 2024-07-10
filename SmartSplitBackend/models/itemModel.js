@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 
 const itemSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
+  userEmail: {
+    type: String,
     ref: "User",
-    required: [true, "User is required!"],
+    required: [true, "User Email is required!"],
   },
-  receiptId: {
-    type: mongoose.Schema.Types.ObjectId,
+  receiptName: {
+    type: String,
     ref: "Receipt",
-    required: [true, "Receipt is required!"],
+    required: [true, "Receipt name is required!"],
   },
   name: {
     type: String,

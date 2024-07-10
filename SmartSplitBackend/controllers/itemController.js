@@ -5,12 +5,12 @@ const createItem = [
   validateCreateItem,
   validate,
   async (req, res) => {
-    const { userId, receiptId, name, price, quantity } = req.body;
+    const { userEmail, receiptName, name, price, quantity } = req.body;
 
     try {
       const item = await Item.create({
-        userId,
-        receiptId,
+        userEmail,
+        receiptName,
         name,
         price,
         quantity,
@@ -81,10 +81,22 @@ const deleteItemByName = async (req, res) => {
   }
 };
 
+// const getItemsByReceiptName = async (req, res) => {
+//   try {
+//     const items = await Item.find({
+//       receiptName: req.params.receiptName,
+//     }).exec();
+//     return res.status(200).json(items);
+//   } catch (err) {
+//     return res.status(500).json({ message: err.message });
+//   }
+// };
+
 module.exports = {
   createItem,
   getAllItems,
   getItemByName,
   updateItemByName,
   deleteItemByName,
+  // getItemsByReceiptName,
 };

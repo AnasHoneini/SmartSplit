@@ -1,5 +1,7 @@
 const Group = require("../models/groupModel");
 const UserGroup = require("../models/userGroupModel");
+const GroupReceipt = require("../models/groupReceiptModel");
+const Receipt = require("../models/receiptModel");
 const User = require("../models/userModel");
 const {
   validateCreateGroup,
@@ -122,6 +124,7 @@ const getMembersByGroupName = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
+
 const getUserGroups = async (req, res) => {
   try {
     const userGroups = await UserGroup.find({
@@ -175,6 +178,21 @@ const addMemberToGroup = [
   },
 ];
 
+const getReceiptsByGroupName = async (req, res) => {
+  try {
+    const groupReceipts = await GroupReceipt.find({
+      groupName: req.params.groupName,
+    }).exec();
+    const receiptNames = groupReceipts.map((gr) => gr.receiptName);
+    const receipts = await Receipt.find({
+      receiptName: { $in: receiptNames },
+    }).exec();
+    return res.status(200).json(receipts);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   createGroup,
   getAllGroups,
@@ -184,4 +202,5 @@ module.exports = {
   getMembersByGroupName,
   addMemberToGroup,
   getUserGroups,
+  getReceiptsByGroupName,
 };

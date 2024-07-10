@@ -5,6 +5,11 @@ const receiptSchema = new mongoose.Schema({
     type: String,
     required: [true, "Restaurant name is required!"],
   },
+  receiptName: {
+    type: String,
+    required: [true, "Receipt name is required!"],
+    unique: true,
+  },
   deletedAt: {
     type: Date,
   },

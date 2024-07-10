@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/group.dart';
+import '../models/receipt.dart';
 
 class GroupsProvider with ChangeNotifier {
   List<Group> _groups = [];
+  final Map<String, List<Receipt>> _groupReceipts =
+      {}; // Ensure it's a Map<String, List<Receipt>>
+
   final Map<String, List<String>> _groupMembers = {};
 
   List<Group> get groups => _groups;
+  List<Receipt> getGroupReceipts(String groupName) =>
+      _groupReceipts[groupName] ?? [];
 
   Future<void> fetchGroupsName(String userEmail) async {
     final url = Uri.parse('http://10.0.2.2:5001/api/group/user/$userEmail');
@@ -103,6 +109,25 @@ class GroupsProvider with ChangeNotifier {
       }
     } catch (e) {
       throw Exception('Failed to load group members: $e');
+    }
+  }
+
+  Future<void> fetchGroupReceipts(String groupName) async {
+    final encodedGroupName = Uri.encodeComponent(groupName);
+    final url =
+        Uri.parse('http://10.0.2.2:5001/api/group/$encodedGroupName/receipts');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        _groupReceipts[groupName] =
+            data.map((receipt) => Receipt.fromJson(receipt)).toList();
+        notifyListeners();
+      } else {
+        throw Exception('Failed to load receipts');
+      }
+    } catch (e) {
+      throw Exception('Failed to load receipts: $e');
     }
   }
 

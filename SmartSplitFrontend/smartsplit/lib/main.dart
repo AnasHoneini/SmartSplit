@@ -1,14 +1,14 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/group_provider.dart';
+import 'providers/item_provider.dart';
 import 'providers/receipt_provider.dart';
 import 'screens/camera_gallery_popup.dart';
 import 'screens/create_group_screen.dart';
+import 'screens/create_receipt_screen.dart';
 import 'screens/groups_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/receipts_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/welcome_screen.dart';
@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => ReceiptProvider()),
         ChangeNotifierProvider(create: (context) => GroupsProvider()),
+        ChangeNotifierProvider(create: (context) => ItemProvider()),
       ],
       child: MaterialApp(
         title: 'SmartSplit',
@@ -42,9 +43,9 @@ class MyApp extends StatelessWidget {
           '/main': (context) => const MainPage(),
           '/settings': (context) => const SettingsScreen(),
           '/create-group': (context) => const CreateGroupScreen(),
-          '/receipts': (context) => const ReceiptsScreen(),
           '/camera-gallery-popup': (context) => const CameraGalleryPopup(),
           '/groups': (context) => const GroupsScreen(),
+          '/create-receipt': (context) => const CreateReceiptScreen(),
         },
       ),
     );

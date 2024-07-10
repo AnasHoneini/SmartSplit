@@ -1,17 +1,22 @@
 const Receipt = require("../models/receiptModel");
 const GroupReceipt = require("../models/groupReceiptModel");
+const Group = require("../models/groupModel");
 const { validateCreateReceipt, validate } = require("../middleware/validator");
 
 const createReceipt = [
   validateCreateReceipt,
   validate,
   async (req, res) => {
-    const { restaurantName, groupId } = req.body;
+    const { restaurantName, receiptName, groupName } = req.body;
 
     try {
-      const receipt = await Receipt.create({ restaurantName });
+      const groupExists = await Group.findOne({ groupName }).exec();
+      if (!groupExists) {
+        return res.status(404).json({ message: "Group not found" });
+      }
 
-      await GroupReceipt.create({ receiptId: receipt._id, groupId });
+      const receipt = await Receipt.create({ restaurantName, receiptName });
+      await GroupReceipt.create({ receiptName, groupName });
 
       return res
         .status(201)
@@ -31,9 +36,11 @@ const getAllReceipts = async (req, res) => {
   }
 };
 
-const getReceiptById = async (req, res) => {
+const getReceiptByName = async (req, res) => {
   try {
-    const receipt = await Receipt.findById(req.params.receiptId).exec();
+    const receipt = await Receipt.findOne({
+      receiptName: req.params.receiptName,
+    }).exec();
     if (!receipt) {
       return res.status(404).json({ message: "Receipt not found" });
     }
@@ -43,9 +50,11 @@ const getReceiptById = async (req, res) => {
   }
 };
 
-const updateReceiptById = async (req, res) => {
+const updateReceiptByName = async (req, res) => {
   try {
-    const receipt = await Receipt.findById(req.params.receiptId).exec();
+    const receipt = await Receipt.findOne({
+      receiptName: req.params.receiptName,
+    }).exec();
     if (!receipt) {
       return res.status(404).json({ message: "Receipt not found" });
     }
@@ -62,9 +71,11 @@ const updateReceiptById = async (req, res) => {
   }
 };
 
-const deleteReceiptById = async (req, res) => {
+const deleteReceiptByName = async (req, res) => {
   try {
-    const receipt = await Receipt.findById(req.params.receiptId).exec();
+    const receipt = await Receipt.findOne({
+      receiptName: req.params.receiptName,
+    }).exec();
     if (!receipt) {
       return res.status(404).json({ message: "Receipt not found" });
     }
@@ -82,7 +93,7 @@ const deleteReceiptById = async (req, res) => {
 module.exports = {
   createReceipt,
   getAllReceipts,
-  getReceiptById,
-  updateReceiptById,
-  deleteReceiptById,
+  getReceiptByName,
+  updateReceiptByName,
+  deleteReceiptByName,
 };

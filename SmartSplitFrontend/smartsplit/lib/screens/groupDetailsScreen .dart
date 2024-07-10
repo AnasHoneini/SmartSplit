@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/group.dart';
+import '../models/receipt.dart';
 import '../providers/group_provider.dart';
+import 'receipt_details_screen.dart';
 
 class GroupDetailsScreen extends StatefulWidget {
   final Group group;
@@ -19,12 +21,13 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchGroupMembers();
+    _fetchGroupDetails();
   }
 
-  Future<void> _fetchGroupMembers() async {
+  Future<void> _fetchGroupDetails() async {
     final groupsProvider = Provider.of<GroupsProvider>(context, listen: false);
     await groupsProvider.fetchGroupMembers(widget.group.groupName);
+    await groupsProvider.fetchGroupReceipts(widget.group.groupName);
   }
 
   Future<void> _addMember() async {
@@ -63,6 +66,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final groupsProvider = Provider.of<GroupsProvider>(context);
+    final receipts = groupsProvider.getGroupReceipts(widget.group.groupName);
 
     return Scaffold(
       appBar: AppBar(
@@ -74,15 +78,6 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // CircleAvatar(
-            //   backgroundImage: NetworkImage(
-            //     widget.group.profilePicture.isNotEmpty
-            //         ? widget.group.profilePicture
-            //         : 'https://via.placeholder.com/150',
-            //   ),
-            //   radius: 40,
-            // ),
-            const SizedBox(height: 20),
             Text(
               widget.group.groupName,
               style: const TextStyle(
@@ -106,6 +101,34 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                       groupsProvider.getMembers(widget.group.groupName)[index];
                   return ListTile(
                     title: Text(member),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Receipts:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: receipts.length,
+                itemBuilder: (ctx, index) {
+                  final receipt = receipts[index];
+                  return Card(
+                    child: ListTile(
+                      title: Text(receipt.receiptName),
+                      subtitle: Text(receipt.restaurantName),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReceiptDetailsScreen(
+                                receipt: receipt, group: widget.group),
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
               ),

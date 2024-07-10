@@ -1,4 +1,5 @@
 const { check, validationResult } = require("express-validator");
+const Group = require("../models/groupModel");
 
 const validateCreateUser = [
   check("firstName")
@@ -51,25 +52,30 @@ const validateUpdateUser = [
 ];
 
 const validateCreateReceipt = [
-  check("restaurantName")
-    .trim()
-    .escape()
+  check("restaurantName").notEmpty().withMessage("Restaurant name is required"),
+  check("receiptName").notEmpty().withMessage("Receipt name is required"),
+  check("groupName")
     .notEmpty()
-    .withMessage("Restaurant name is required"),
-  check("groupId")
-    .trim()
-    .escape()
-    .notEmpty()
-    .withMessage("Group ID is required"),
+    .withMessage("Group name is required")
+    .custom(async (value) => {
+      const groupExists = await Group.findOne({ groupName: value }).exec();
+      if (!groupExists) {
+        throw new Error("Group is not defined");
+      }
+    }),
 ];
 
 const validateCreateItem = [
-  check("userId").trim().escape().notEmpty().withMessage("User ID is required"),
-  check("receiptId")
+  check("userEmail")
     .trim()
     .escape()
     .notEmpty()
-    .withMessage("Receipt ID is required"),
+    .withMessage("User Email is required"),
+  check("receiptName")
+    .trim()
+    .escape()
+    .notEmpty()
+    .withMessage("Receipt Name is required"),
   check("name").trim().escape().notEmpty().withMessage("Item name is required"),
   check("price").isNumeric().withMessage("Price must be a number"),
   check("quantity").isInt().withMessage("Quantity must be an integer"),

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:smartsplit/screens/groups_screen.dart';
 import '../models/user.dart';
 import '../providers/auth_provider.dart';
-import '../screens/receipts_screen.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -37,13 +36,6 @@ class MainPage extends StatelessWidget {
             UserAccountsDrawerHeader(
               accountName: Text('${user?.firstName} ${user?.lastName}'),
               accountEmail: Text(user?.email ?? 'user@example.com'),
-              // currentAccountPicture: CircleAvatar(
-              //   backgroundImage: NetworkImage(
-              //     user?.profilePicture != null
-              //         ? user!.profilePicture
-              //         : 'https://via.placeholder.com/150',
-              //   ),
-              // ),
             ),
             ListTile(
               leading: const Icon(Icons.home),
@@ -52,13 +44,6 @@ class MainPage extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
-            // ListTile(
-            //   leading: const Icon(Icons.receipt),
-            //   title: const Text('Create Receipt'),
-            //   onTap: () {
-            //     Navigator.pushNamed(context, '/create-receipt');
-            //   },
-            // ),
             ListTile(
               leading: const Icon(Icons.group),
               title: const Text('Create Group'),
@@ -68,9 +53,9 @@ class MainPage extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: const Text('Capture Receipt'),
+              title: const Text('Create Receipt'),
               onTap: () {
-                Navigator.pushNamed(context, '/camera-gallery-popup');
+                Navigator.pushNamed(context, '/create-receipt');
               },
             ),
             ListTile(
@@ -119,18 +104,20 @@ class MainPage extends StatelessWidget {
                       );
                     },
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.receipt),
-                    title: const Text('Recent Receipts'),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ReceiptsScreen(),
-                        ),
-                      );
-                    },
-                  ),
+                  // ListTile(
+                  //   leading: const Icon(Icons.receipt),
+                  //   title: const Text('Recent Receipts'),
+                  //   onTap: () {
+                  //     // Pass the required groupName parameter
+                  //     // Navigator.push(
+                  //     //   context,
+                  //     //   MaterialPageRoute(
+                  //     //     builder: (context) =>
+                  //     //         ReceiptScreen(groupName: 'YourGroupName'),
+                  //     //   ),
+                  //     // );
+                  //   },
+                  // ),
                 ],
               ),
             ),
@@ -149,10 +136,6 @@ class MainPage extends StatelessWidget {
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.history),
-          //   label: 'History',
-          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
@@ -163,9 +146,9 @@ class MainPage extends StatelessWidget {
             case 0:
               Navigator.pushNamed(context, '/');
               break;
-            case 1:
-              Navigator.pushNamed(context, '/payment-history');
-              break;
+            // case 1:
+            //   Navigator.pushNamed(context, '/payment-history');
+            //   break;
             case 2:
               Navigator.pushNamed(context, '/profile');
               break;

@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 
 const groupReceiptSchema = new mongoose.Schema({
-  receiptId: {
-    type: mongoose.Schema.Types.ObjectId,
+  receiptName: {
+    type: String,
     ref: "Receipt",
-    required: [true, "Receipt is required!"],
+    required: [true, "Receipt name is required!"],
   },
-  groupId: {
-    type: mongoose.Schema.Types.ObjectId,
+  groupName: {
+    type: String,
     ref: "Group",
-    required: [true, "Group is required!"],
+    required: [true, "Group name is required!"],
   },
 });
 
-module.exports = mongoose.model("groupReceipt", groupReceiptSchema);
+module.exports = mongoose.model("GroupReceipt", groupReceiptSchema);
