@@ -1,10 +1,17 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const {
   validateCreateUser,
   validateUpdateUser,
   validate,
 } = require("../middleware/validator");
+
+const generateToken = (user) => {
+  return jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+    expiresIn: "10m",
+  });
+};
 
 const createUser = [
   validateCreateUser,
@@ -26,7 +33,34 @@ const createUser = [
         passwordHash: hashedPassword,
         profilePicture,
       });
-      res.status(201).json({ message: "User created successfully!", user });
+
+      const token = generateToken(user);
+
+      res
+        .status(201)
+        .json({ message: "User created successfully!", token, user });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  },
+];
+
+const loginUser = [
+  async (req, res) => {
+    const { email, password } = req.body;
+    try {
+      const user = await User.findOne({ email }).exec();
+      if (!user) {
+        return res.status(400).json({ message: "Invalid email or password" });
+      }
+
+      const isMatch = await bcrypt.compare(password, user.passwordHash);
+      if (!isMatch) {
+        return res.status(400).json({ message: "Invalid email or password" });
+      }
+
+      const token = generateToken(user);
+      res.status(200).json({ message: "Login successful!", token, user });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
@@ -104,6 +138,7 @@ const deleteUserByEmail = async (req, res) => {
 
 module.exports = {
   createUser,
+  loginUser,
   getAllUsers,
   getUserByEmail,
   deleteUserByEmail,

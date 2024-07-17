@@ -81,16 +81,16 @@ const deleteItemByName = async (req, res) => {
   }
 };
 
-// const getItemsByReceiptName = async (req, res) => {
-//   try {
-//     const items = await Item.find({
-//       receiptName: req.params.receiptName,
-//     }).exec();
-//     return res.status(200).json(items);
-//   } catch (err) {
-//     return res.status(500).json({ message: err.message });
-//   }
-// };
+const getItemsByReceiptName = async (req, res) => {
+  try {
+    const items = await Item.find({
+      receiptName: req.params.receiptName,
+    }).exec();
+    return res.status(200).json(items);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
 
 module.exports = {
   createItem,
@@ -98,5 +98,5 @@ module.exports = {
   getItemByName,
   updateItemByName,
   deleteItemByName,
-  // getItemsByReceiptName,
+  getItemsByReceiptName,
 };

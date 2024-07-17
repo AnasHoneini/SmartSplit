@@ -6,13 +6,14 @@ const {
   updateReceiptByName,
   deleteReceiptByName,
 } = require("../controllers/receiptController");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-router.post("/receipt", createReceipt);
-router.get("/receipt", getAllReceipts);
-router.get("/receipt/:receiptName", getReceiptByName);
-router.put("/receipt/:receiptName", updateReceiptByName);
-router.delete("/receipt/:receiptName", deleteReceiptByName);
+router.post("/receipt", auth, createReceipt);
+router.get("/receipt", auth, getAllReceipts);
+router.get("/receipt/:receiptName", auth, getReceiptByName);
+router.put("/receipt/:receiptName", auth, updateReceiptByName);
+router.delete("/receipt/:receiptName", auth, deleteReceiptByName);
 
 module.exports = router;

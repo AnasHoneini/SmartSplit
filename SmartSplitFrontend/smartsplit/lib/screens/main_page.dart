@@ -9,7 +9,8 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AuthProvider>(context).user;
+    final authProvider = Provider.of<AuthProvider>(context);
+    final user = authProvider.user;
 
     return Scaffold(
       appBar: AppBar(
@@ -70,6 +71,13 @@ class MainPage extends StatelessWidget {
               title: const Text('Toggle Dark Mode'),
               onTap: () {
                 // TODO: Add functionality to toggle dark mode
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () async {
+                await authProvider.logout();
               },
             ),
           ],
