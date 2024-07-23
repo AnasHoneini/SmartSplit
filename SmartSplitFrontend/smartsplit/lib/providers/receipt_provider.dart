@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartsplit/providers/auth_provider.dart';
 import 'package:smartsplit/utils/jwt_utils.dart';
-import '../main.dart'; // Import navigatorKey
+import '../main.dart';
 
 class ReceiptProvider with ChangeNotifier {
   final String _baseUrl = 'http://10.0.2.2:5001/api';

@@ -27,15 +27,6 @@ const createReceipt = [
   },
 ];
 
-const getAllReceipts = async (req, res) => {
-  try {
-    const receipts = await Receipt.find().exec();
-    return res.status(200).json(receipts);
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
-
 const getReceiptByName = async (req, res) => {
   try {
     const receipt = await Receipt.findOne({
@@ -92,7 +83,6 @@ const deleteReceiptByName = async (req, res) => {
 
 module.exports = {
   createReceipt,
-  getAllReceipts,
   getReceiptByName,
   updateReceiptByName,
   deleteReceiptByName,

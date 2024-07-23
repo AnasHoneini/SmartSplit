@@ -7,12 +7,11 @@ import 'package:smartsplit/providers/auth_provider.dart';
 import '../models/group.dart';
 import '../models/receipt.dart';
 import '../utils/jwt_utils.dart';
-import '../main.dart'; // Import navigatorKey
+import '../main.dart';
 
 class GroupsProvider with ChangeNotifier {
   List<Group> _groups = [];
-  final Map<String, List<Receipt>> _groupReceipts =
-      {}; // Ensure it's a Map<String, List<Receipt>>
+  final Map<String, List<Receipt>> _groupReceipts = {};
   final Map<String, List<String>> _groupMembers = {};
 
   List<Group> get groups => _groups;

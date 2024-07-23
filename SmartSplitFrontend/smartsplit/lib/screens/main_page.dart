@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartsplit/screens/groups_screen.dart';
-import '../models/user.dart';
 import '../providers/auth_provider.dart';
 
 class MainPage extends StatelessWidget {
@@ -112,20 +111,6 @@ class MainPage extends StatelessWidget {
                       );
                     },
                   ),
-                  // ListTile(
-                  //   leading: const Icon(Icons.receipt),
-                  //   title: const Text('Recent Receipts'),
-                  //   onTap: () {
-                  //     // Pass the required groupName parameter
-                  //     // Navigator.push(
-                  //     //   context,
-                  //     //   MaterialPageRoute(
-                  //     //     builder: (context) =>
-                  //     //         ReceiptScreen(groupName: 'YourGroupName'),
-                  //     //   ),
-                  //     // );
-                  //   },
-                  // ),
                 ],
               ),
             ),

@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartsplit/providers/auth_provider.dart';
 import 'package:smartsplit/utils/jwt_utils.dart';
 import '../models/item.dart';
-import '../main.dart'; // Import navigatorKey
+import '../main.dart';
 
 class ItemProvider with ChangeNotifier {
   List<Item> _items = [];

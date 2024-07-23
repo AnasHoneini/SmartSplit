@@ -1,8 +1,9 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/group_provider.dart';
-import '../models/group.dart';
 import 'groupDetailsScreen .dart';
 
 class GroupsScreen extends StatefulWidget {

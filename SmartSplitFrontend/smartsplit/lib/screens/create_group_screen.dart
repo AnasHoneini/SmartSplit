@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import '../models/group.dart';
 import '../providers/auth_provider.dart';
 import '../providers/group_provider.dart';
 

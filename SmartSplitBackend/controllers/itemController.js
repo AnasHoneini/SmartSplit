@@ -24,15 +24,6 @@ const createItem = [
   },
 ];
 
-const getAllItems = async (req, res) => {
-  try {
-    const items = await Item.find().exec();
-    return res.status(200).json(items);
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
-
 const getItemByName = async (req, res) => {
   try {
     const item = await Item.findOne({ name: req.params.name }).exec();
@@ -94,7 +85,6 @@ const getItemsByReceiptName = async (req, res) => {
 
 module.exports = {
   createItem,
-  getAllItems,
   getItemByName,
   updateItemByName,
   deleteItemByName,

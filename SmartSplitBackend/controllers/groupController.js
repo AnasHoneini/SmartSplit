@@ -40,15 +40,6 @@ const createGroup = [
   },
 ];
 
-const getAllGroups = async (req, res) => {
-  try {
-    const groups = await Group.find().exec();
-    return res.status(200).json(groups);
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
-
 const getGroupByName = async (req, res) => {
   try {
     const group = await Group.findOne({
@@ -195,7 +186,6 @@ const getReceiptsByGroupName = async (req, res) => {
 
 module.exports = {
   createGroup,
-  getAllGroups,
   getGroupByName,
   updateGroupByName,
   deleteGroupByName,

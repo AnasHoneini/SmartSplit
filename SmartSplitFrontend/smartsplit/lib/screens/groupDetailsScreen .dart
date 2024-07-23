@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/group.dart';
-import '../models/receipt.dart';
 import '../providers/group_provider.dart';
 import 'receipt_details_screen.dart';
 

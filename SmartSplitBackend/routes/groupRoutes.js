@@ -3,7 +3,6 @@ const auth = require("../middleware/auth");
 
 const {
   createGroup,
-  getAllGroups,
   getGroupByName,
   updateGroupByName,
   deleteGroupByName,
@@ -16,7 +15,6 @@ const {
 const router = express.Router();
 
 router.post("/group", auth, createGroup);
-router.get("/group", auth, getAllGroups);
 router.get("/group/:groupName", auth, getGroupByName);
 router.put("/group/:groupName", auth, updateGroupByName);
 router.delete("/group/:groupName", auth, deleteGroupByName);

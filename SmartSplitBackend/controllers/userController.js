@@ -67,15 +67,6 @@ const loginUser = [
   },
 ];
 
-const getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find().exec();
-    res.status(200).json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
 const getUserByEmail = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.params.email }).exec();
@@ -139,7 +130,6 @@ const deleteUserByEmail = async (req, res) => {
 module.exports = {
   createUser,
   loginUser,
-  getAllUsers,
   getUserByEmail,
   deleteUserByEmail,
   updateUserByEmail,
