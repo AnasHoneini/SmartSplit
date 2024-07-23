@@ -1,7 +1,7 @@
-const Receipt = require("../models/receiptModel");
-const GroupReceipt = require("../models/groupReceiptModel");
-const Group = require("../models/groupModel");
-const { validateCreateReceipt, validate } = require("../middleware/validator");
+const Receipt = require('../models/receiptModel');
+const GroupReceipt = require('../models/groupReceiptModel');
+const Group = require('../models/groupModel');
+const { validateCreateReceipt, validate } = require('../middleware/validator');
 
 const createReceipt = [
   validateCreateReceipt,
@@ -12,7 +12,7 @@ const createReceipt = [
     try {
       const groupExists = await Group.findOne({ groupName }).exec();
       if (!groupExists) {
-        return res.status(404).json({ message: "Group not found" });
+        return res.status(404).json({ message: 'Group not found' });
       }
 
       const receipt = await Receipt.create({ restaurantName, receiptName });
@@ -20,7 +20,7 @@ const createReceipt = [
 
       return res
         .status(201)
-        .json({ message: "Receipt created successfully!", receipt });
+        .json({ message: 'Receipt created successfully!', receipt });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
@@ -33,7 +33,7 @@ const getReceiptByName = async (req, res) => {
       receiptName: req.params.receiptName,
     }).exec();
     if (!receipt) {
-      return res.status(404).json({ message: "Receipt not found" });
+      return res.status(404).json({ message: 'Receipt not found' });
     }
     return res.status(200).json(receipt);
   } catch (err) {
@@ -47,7 +47,7 @@ const updateReceiptByName = async (req, res) => {
       receiptName: req.params.receiptName,
     }).exec();
     if (!receipt) {
-      return res.status(404).json({ message: "Receipt not found" });
+      return res.status(404).json({ message: 'Receipt not found' });
     }
 
     if (req.body.restaurantName)
@@ -56,7 +56,7 @@ const updateReceiptByName = async (req, res) => {
     receipt.updatedAt = new Date();
 
     await receipt.save();
-    return res.status(200).json({ message: "Receipt updated successfully!" });
+    return res.status(200).json({ message: 'Receipt updated successfully!' });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -68,14 +68,14 @@ const deleteReceiptByName = async (req, res) => {
       receiptName: req.params.receiptName,
     }).exec();
     if (!receipt) {
-      return res.status(404).json({ message: "Receipt not found" });
+      return res.status(404).json({ message: 'Receipt not found' });
     }
 
     receipt.deletedAt = new Date();
     await receipt.save();
     return res
       .status(200)
-      .json({ message: "Receipt marked as deleted successfully!" });
+      .json({ message: 'Receipt marked as deleted successfully!' });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

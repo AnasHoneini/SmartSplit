@@ -1,27 +1,27 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema({
   userEmail: {
     type: String,
-    ref: "User",
-    required: [true, "User Email is required!"],
+    ref: 'User',
+    required: [true, 'User Email is required!'],
   },
   receiptName: {
     type: String,
-    ref: "Receipt",
-    required: [true, "Receipt name is required!"],
+    ref: 'Receipt',
+    required: [true, 'Receipt name is required!'],
   },
   name: {
     type: String,
-    required: [true, "Name is required!"],
+    required: [true, 'Name is required!'],
   },
   price: {
     type: Number,
-    required: [true, "Price is required!"],
+    required: [true, 'Price is required!'],
   },
   quantity: {
     type: Number,
-    required: [true, "Quantity is required!"],
+    required: [true, 'Quantity is required!'],
   },
   deletedAt: {
     type: Date,
@@ -36,4 +36,4 @@ const itemSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Item", itemSchema);
+module.exports = mongoose.model('Item', itemSchema);
