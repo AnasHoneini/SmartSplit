@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/receipt.dart';
 import '../models/group.dart';
-import '../models/item.dart';
 import '../providers/group_provider.dart';
-import '../providers/item_provider.dart'; // Ensure you have an ItemProvider for managing items
+import '../providers/item_provider.dart';
 
 class ReceiptDetailsScreen extends StatefulWidget {
   final Receipt receipt;
@@ -14,6 +13,7 @@ class ReceiptDetailsScreen extends StatefulWidget {
       {required this.receipt, required this.group, super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ReceiptDetailsScreenState createState() => _ReceiptDetailsScreenState();
 }
 
@@ -60,8 +60,6 @@ class _ReceiptDetailsScreenState extends State<ReceiptDetailsScreen> {
       'userEmail': userEmail,
       'receiptName': widget.receipt.receiptName,
     };
-
-    print('Adding item with data: $itemData'); // Debug log
 
     try {
       await itemProvider.addItemToReceipt(itemData);

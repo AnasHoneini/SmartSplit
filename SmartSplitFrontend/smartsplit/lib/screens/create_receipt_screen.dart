@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/receipt.dart';
 import '../providers/auth_provider.dart';
 import '../providers/receipt_provider.dart';
 import '../providers/group_provider.dart';
@@ -21,13 +20,24 @@ class CreateReceiptScreenState extends State<CreateReceiptScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchGroups();
+    _fetchUserGroups();
   }
 
-  Future<void> _fetchGroups() async {
+  Future<void> _fetchUserGroups() async {
     final groupsProvider = Provider.of<GroupsProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final user = authProvider.user;
+
+    if (user == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User not logged in')),
+      );
+      return;
+    }
+
     try {
-      await groupsProvider.fetchGroups();
+      await groupsProvider.fetchGroupsName(user.email);
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,14 +56,6 @@ class CreateReceiptScreenState extends State<CreateReceiptScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('User not logged in')),
-      );
-      return;
-    }
-
-    if (_selectedGroup == null) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a group')),
       );
       return;
     }

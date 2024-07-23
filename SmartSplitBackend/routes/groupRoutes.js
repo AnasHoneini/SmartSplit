@@ -1,8 +1,8 @@
 const express = require("express");
+const auth = require("../middleware/auth");
 
 const {
   createGroup,
-  getAllGroups,
   getGroupByName,
   updateGroupByName,
   deleteGroupByName,
@@ -14,14 +14,13 @@ const {
 
 const router = express.Router();
 
-router.post("/group", createGroup);
-router.get("/group", getAllGroups);
-router.get("/group/:groupName", getGroupByName);
-router.put("/group/:groupName", updateGroupByName);
-router.delete("/group/:groupName", deleteGroupByName);
-router.get("/group/:groupName/members", getMembersByGroupName);
-router.post("/group/:groupName/addMember", addMemberToGroup);
-router.get("/group/user/:userEmail", getUserGroups);
-router.get("/group/:groupName/receipts", getReceiptsByGroupName);
+router.post("/group", auth, createGroup);
+router.get("/group/:groupName", auth, getGroupByName);
+router.put("/group/:groupName", auth, updateGroupByName);
+router.delete("/group/:groupName", auth, deleteGroupByName);
+router.get("/group/:groupName/members", auth, getMembersByGroupName);
+router.post("/group/:groupName/addMember", auth, addMemberToGroup);
+router.get("/group/user/:userEmail", auth, getUserGroups);
+router.get("/group/:groupName/receipts", auth, getReceiptsByGroupName);
 
 module.exports = router;

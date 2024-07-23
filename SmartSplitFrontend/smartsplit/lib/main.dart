@@ -14,6 +14,8 @@ import 'screens/signup_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/main_page.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() {
   runApp(const MyApp());
 }
@@ -31,6 +33,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ItemProvider()),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         title: 'SmartSplit',
         theme: ThemeData(
           primarySwatch: Colors.blue,

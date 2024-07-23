@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartsplit/screens/groups_screen.dart';
-import '../models/user.dart';
 import '../providers/auth_provider.dart';
 
 class MainPage extends StatelessWidget {
@@ -9,7 +8,8 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AuthProvider>(context).user;
+    final authProvider = Provider.of<AuthProvider>(context);
+    final user = authProvider.user;
 
     return Scaffold(
       appBar: AppBar(
@@ -72,6 +72,13 @@ class MainPage extends StatelessWidget {
                 // TODO: Add functionality to toggle dark mode
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () async {
+                await authProvider.logout();
+              },
+            ),
           ],
         ),
       ),
@@ -104,20 +111,6 @@ class MainPage extends StatelessWidget {
                       );
                     },
                   ),
-                  // ListTile(
-                  //   leading: const Icon(Icons.receipt),
-                  //   title: const Text('Recent Receipts'),
-                  //   onTap: () {
-                  //     // Pass the required groupName parameter
-                  //     // Navigator.push(
-                  //     //   context,
-                  //     //   MaterialPageRoute(
-                  //     //     builder: (context) =>
-                  //     //         ReceiptScreen(groupName: 'YourGroupName'),
-                  //     //   ),
-                  //     // );
-                  //   },
-                  // ),
                 ],
               ),
             ),
