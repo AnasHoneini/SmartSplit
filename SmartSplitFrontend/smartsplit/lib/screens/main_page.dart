@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartsplit/screens/groups_screen.dart';
 import '../providers/auth_provider.dart';
+import 'receipts_screen.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -108,6 +109,17 @@ class MainPage extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => const GroupsScreen(),
                         ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.receipt),
+                    title: const Text('Recent Receipts Price'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ReceiptsScreen()),
                       );
                     },
                   ),

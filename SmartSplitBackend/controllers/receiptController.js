@@ -1,7 +1,9 @@
 const Receipt = require('../models/receiptModel');
 const GroupReceipt = require('../models/groupReceiptModel');
+const UserGroup = require('../models/userGroupModel');
 const Group = require('../models/groupModel');
 const { validateCreateReceipt, validate } = require('../middleware/validator');
+const Item = require('../models/itemModel');
 
 const createReceipt = [
   validateCreateReceipt,
@@ -81,9 +83,51 @@ const deleteReceiptByName = async (req, res) => {
   }
 };
 
+const getUserReceipts = async (req, res) => {
+  try {
+    const userEmail = req.user.email;
+    const userGroups = await UserGroup.find({ userEmail }).exec();
+    const groupNames = userGroups.map((ug) => ug.groupName);
+
+    const groupReceipts = await GroupReceipt.find({
+      groupName: { $in: groupNames },
+    }).exec();
+    const receiptNames = groupReceipts.map((gr) => gr.receiptName);
+
+    const receipts = await Receipt.find({
+      receiptName: { $in: receiptNames },
+    }).exec();
+
+    const receiptData = await Promise.all(
+      receipts.map(async (receipt) => {
+        const items = await Item.find({
+          receiptName: receipt.receiptName,
+          userEmail: userEmail,
+        }).exec();
+
+        const totalPrice = items.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        );
+
+        return {
+          receipt,
+          totalPrice,
+        };
+      })
+    );
+
+    res.status(200).json(receiptData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   createReceipt,
   getReceiptByName,
   updateReceiptByName,
   deleteReceiptByName,
+  getUserReceipts,
 };

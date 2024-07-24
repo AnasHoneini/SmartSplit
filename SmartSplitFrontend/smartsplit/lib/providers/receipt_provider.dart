@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartsplit/providers/auth_provider.dart';
+import 'package:smartsplit/screens/receipts_screen.dart';
 import 'package:smartsplit/utils/jwt_utils.dart';
 import '../main.dart';
 
@@ -39,6 +40,29 @@ class ReceiptProvider with ChangeNotifier {
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to create receipt: $e');
+    }
+  }
+
+  Future<List<ReceiptWithTotal>> fetchUserReceipts() async {
+    final url = Uri.parse('$_baseUrl/user/receipts');
+    final request = http.Request('GET', url);
+    await _addAuthHeaders(request);
+
+    try {
+      final response = await request.send();
+      if (response.statusCode == 200) {
+        final List<dynamic> receiptList =
+            json.decode(await response.stream.bytesToString());
+        return receiptList
+            .map((json) => ReceiptWithTotal.fromJson(json))
+            .toList();
+      } else {
+        final errorMessage =
+            json.decode(await response.stream.bytesToString())['message'];
+        throw Exception('Failed to load receipts: $errorMessage');
+      }
+    } catch (e) {
+      throw Exception('Failed to load receipts: $e');
     }
   }
 }

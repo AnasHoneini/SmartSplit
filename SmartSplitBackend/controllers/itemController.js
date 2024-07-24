@@ -5,19 +5,59 @@ const createItem = [
   validateCreateItem,
   validate,
   async (req, res) => {
-    const { userEmail, receiptName, name, price, quantity } = req.body;
+    const {
+      userEmail,
+      receiptName,
+      name,
+      price,
+      quantity,
+      shared,
+      sharedWith,
+    } = req.body;
 
     try {
-      const item = await Item.create({
-        userEmail,
-        receiptName,
-        name,
-        price,
-        quantity,
-      });
-      return res
-        .status(201)
-        .json({ message: 'Item created successfully!', item });
+      if (shared) {
+        const sharedCount = sharedWith.length + 1;
+        const sharedPrice = (price / sharedCount).toFixed(2);
+
+        const items = [];
+        const mainItem = await Item.create({
+          userEmail,
+          receiptName,
+          name,
+          price: sharedPrice,
+          quantity,
+        });
+        items.push(mainItem);
+
+        for (const email of sharedWith) {
+          const sharedItem = await Item.create({
+            userEmail: email,
+            receiptName,
+            name,
+            price: sharedPrice,
+            quantity,
+          });
+          items.push(sharedItem);
+        }
+
+        return res.status(201).json({
+          message: 'Shared item created successfully!',
+          items,
+        });
+      } else {
+        const item = await Item.create({
+          userEmail,
+          receiptName,
+          name,
+          price,
+          quantity,
+        });
+
+        return res
+          .status(201)
+          .json({ message: 'Item created successfully!', item });
+      }
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
