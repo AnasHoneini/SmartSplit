@@ -1,13 +1,13 @@
-const Group = require("../models/groupModel");
-const UserGroup = require("../models/userGroupModel");
-const GroupReceipt = require("../models/groupReceiptModel");
-const Receipt = require("../models/receiptModel");
-const User = require("../models/userModel");
+const Group = require('../models/groupModel');
+const UserGroup = require('../models/userGroupModel');
+const GroupReceipt = require('../models/groupReceiptModel');
+const Receipt = require('../models/receiptModel');
+const User = require('../models/userModel');
 const {
   validateCreateGroup,
   validateAddMemberToGroup,
   validate,
-} = require("../middleware/validator");
+} = require('../middleware/validator');
 
 const createGroup = [
   validateCreateGroup,
@@ -19,7 +19,7 @@ const createGroup = [
     try {
       const user = await User.findOne({ email: createdBy });
       if (!user) {
-        return res.status(404).send({ message: "User not found" });
+        return res.status(404).send({ message: 'User not found' });
       }
       const group = await Group.create({
         groupName,
@@ -33,7 +33,7 @@ const createGroup = [
 
       return res
         .status(201)
-        .json({ message: "Group created successfully!", group });
+        .json({ message: 'Group created successfully!', group });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
@@ -46,7 +46,7 @@ const getGroupByName = async (req, res) => {
       groupName: req.params.groupName,
     }).exec();
     if (!group) {
-      return res.status(404).json({ message: "Group not found" });
+      return res.status(404).json({ message: 'Group not found' });
     }
     return res.status(200).json(group);
   } catch (err) {
@@ -60,7 +60,7 @@ const updateGroupByName = async (req, res) => {
       groupName: req.params.groupName,
     }).exec();
     if (!group) {
-      return res.status(404).json({ message: "Group not found" });
+      return res.status(404).json({ message: 'Group not found' });
     }
 
     if (req.body.groupName) group.groupName = req.body.groupName;
@@ -70,7 +70,7 @@ const updateGroupByName = async (req, res) => {
     group.updatedAt = new Date();
 
     await group.save();
-    return res.status(200).json({ message: "Group updated successfully!" });
+    return res.status(200).json({ message: 'Group updated successfully!' });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -82,14 +82,14 @@ const deleteGroupByName = async (req, res) => {
       groupName: req.params.groupName,
     }).exec();
     if (!group) {
-      return res.status(404).json({ message: "Group not found" });
+      return res.status(404).json({ message: 'Group not found' });
     }
 
     group.deletedAt = new Date();
     await group.save();
     return res
       .status(200)
-      .json({ message: "Group marked as deleted successfully!" });
+      .json({ message: 'Group marked as deleted successfully!' });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -101,7 +101,7 @@ const getMembersByGroupName = async (req, res) => {
       groupName: req.params.groupName,
     }).exec();
     if (!group) {
-      return res.status(404).json({ message: "Group not found" });
+      return res.status(404).json({ message: 'Group not found' });
     }
 
     const userGroups = await UserGroup.find({
@@ -139,12 +139,12 @@ const addMemberToGroup = [
     try {
       const group = await Group.findOne({ groupName }).exec();
       if (!group) {
-        return res.status(404).json({ message: "Group not found" });
+        return res.status(404).json({ message: 'Group not found' });
       }
 
       const user = await User.findOne({ email: userEmail }).exec();
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: 'User not found' });
       }
 
       const existingUserGroup = await UserGroup.findOne({
@@ -154,7 +154,7 @@ const addMemberToGroup = [
       if (existingUserGroup) {
         return res
           .status(400)
-          .json({ message: "User is already a member of the group" });
+          .json({ message: 'User is already a member of the group' });
       }
 
       const userGroup = new UserGroup({ groupName, userEmail });
@@ -162,7 +162,7 @@ const addMemberToGroup = [
 
       return res
         .status(201)
-        .json({ message: "Member added to group successfully!", userGroup });
+        .json({ message: 'Member added to group successfully!', userGroup });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }

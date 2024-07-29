@@ -1,5 +1,5 @@
-const Item = require("../models/itemModel");
-const { validateCreateItem, validate } = require("../middleware/validator");
+const Item = require('../models/itemModel');
+const { validateCreateItem, validate } = require('../middleware/validator');
 
 const createItem = [
   validateCreateItem,
@@ -17,7 +17,7 @@ const createItem = [
       });
       return res
         .status(201)
-        .json({ message: "Item created successfully!", item });
+        .json({ message: 'Item created successfully!', item });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
@@ -28,7 +28,7 @@ const getItemByName = async (req, res) => {
   try {
     const item = await Item.findOne({ name: req.params.name }).exec();
     if (!item) {
-      return res.status(404).json({ message: "Item not found" });
+      return res.status(404).json({ message: 'Item not found' });
     }
     return res.status(200).json(item);
   } catch (err) {
@@ -40,7 +40,7 @@ const updateItemByName = async (req, res) => {
   try {
     const item = await Item.findOne({ name: req.params.name }).exec();
     if (!item) {
-      return res.status(404).json({ message: "Item not found" });
+      return res.status(404).json({ message: 'Item not found' });
     }
 
     if (req.body.name) item.name = req.body.name;
@@ -49,7 +49,7 @@ const updateItemByName = async (req, res) => {
     item.updatedAt = new Date();
 
     await item.save();
-    return res.status(200).json({ message: "Item updated successfully!" });
+    return res.status(200).json({ message: 'Item updated successfully!' });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -59,14 +59,14 @@ const deleteItemByName = async (req, res) => {
   try {
     const item = await Item.findOne({ name: req.params.name }).exec();
     if (!item) {
-      return res.status(404).json({ message: "Item not found" });
+      return res.status(404).json({ message: 'Item not found' });
     }
 
     item.deletedAt = new Date();
     await item.save();
     return res
       .status(200)
-      .json({ message: "Item marked as deleted successfully!" });
+      .json({ message: 'Item marked as deleted successfully!' });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

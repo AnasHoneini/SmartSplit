@@ -1,15 +1,15 @@
-const User = require("../models/userModel");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const User = require('../models/userModel');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const {
   validateCreateUser,
   validateUpdateUser,
   validate,
-} = require("../middleware/validator");
+} = require('../middleware/validator');
 
 const generateToken = (user) => {
   return jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-    expiresIn: "10m",
+    expiresIn: '10m',
   });
 };
 
@@ -22,7 +22,7 @@ const createUser = [
     try {
       const duplicateUser = await User.findOne({ email }).exec();
       if (duplicateUser) {
-        return res.status(400).json({ message: "User already exists!" });
+        return res.status(400).json({ message: 'User already exists!' });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -38,7 +38,7 @@ const createUser = [
 
       res
         .status(201)
-        .json({ message: "User created successfully!", token, user });
+        .json({ message: 'User created successfully!', token, user });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
@@ -51,16 +51,16 @@ const loginUser = [
     try {
       const user = await User.findOne({ email }).exec();
       if (!user) {
-        return res.status(400).json({ message: "Invalid email or password" });
+        return res.status(400).json({ message: 'Invalid email or password' });
       }
 
       const isMatch = await bcrypt.compare(password, user.passwordHash);
       if (!isMatch) {
-        return res.status(400).json({ message: "Invalid email or password" });
+        return res.status(400).json({ message: 'Invalid email or password' });
       }
 
       const token = generateToken(user);
-      res.status(200).json({ message: "Login successful!", token, user });
+      res.status(200).json({ message: 'Login successful!', token, user });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
@@ -71,7 +71,7 @@ const getUserByEmail = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.params.email }).exec();
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
     res.status(200).json(user);
   } catch (err) {
@@ -86,7 +86,7 @@ const updateUserByEmail = [
     try {
       const user = await User.findOne({ email: req.params.email }).exec();
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: 'User not found' });
       }
 
       if (req.body.firstName) {
@@ -106,7 +106,7 @@ const updateUserByEmail = [
       }
       user.updatedAt = new Date();
       await user.save();
-      res.status(200).json({ message: "User updated successfully!" });
+      res.status(200).json({ message: 'User updated successfully!' });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
@@ -117,11 +117,11 @@ const deleteUserByEmail = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.params.email }).exec();
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
     user.deletedAt = new Date();
     await user.save();
-    res.status(200).json({ message: "User marked as deleted successfully!" });
+    res.status(200).json({ message: 'User marked as deleted successfully!' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

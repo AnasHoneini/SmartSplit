@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const groupSchema = new mongoose.Schema({
   groupName: {
     type: String,
-    required: [true, "Group Name is required!"],
+    required: [true, 'Group Name is required!'],
   },
   description: {
     type: String,
@@ -13,13 +13,13 @@ const groupSchema = new mongoose.Schema({
   },
   createdBy: {
     type: String,
-    ref: "User",
-    required: [true, "User is required!"],
+    ref: 'User',
+    required: [true, 'User is required!'],
   },
   isActive: {
     type: Boolean,
     default: true,
-    required: [true, "Active is required!"],
+    required: [true, 'Active is required!'],
   },
   deletedAt: {
     type: Date,
@@ -34,4 +34,4 @@ const groupSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Group", groupSchema);
+module.exports = mongoose.model('Group', groupSchema);

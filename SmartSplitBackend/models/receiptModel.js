@@ -1,13 +1,13 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const receiptSchema = new mongoose.Schema({
   restaurantName: {
     type: String,
-    required: [true, "Restaurant name is required!"],
+    required: [true, 'Restaurant name is required!'],
   },
   receiptName: {
     type: String,
-    required: [true, "Receipt name is required!"],
+    required: [true, 'Receipt name is required!'],
     unique: true,
   },
   deletedAt: {
@@ -23,4 +23,4 @@ const receiptSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Receipt", receiptSchema);
+module.exports = mongoose.model('Receipt', receiptSchema);
