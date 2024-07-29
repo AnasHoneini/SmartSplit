@@ -1,7 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartsplit/providers/auth_provider.dart';
 import 'package:smartsplit/utils/jwt_utils.dart';
@@ -60,8 +60,15 @@ class ItemProvider with ChangeNotifier {
       final response = await request.send();
       if (response.statusCode == 201) {
         final responseData = json.decode(await response.stream.bytesToString());
-        final newItem = Item.fromJson(responseData['item']);
-        _items.add(newItem);
+        if (responseData['items'] != null) {
+          final newItems = (responseData['items'] as List)
+              .map((item) => Item.fromJson(item))
+              .toList();
+          _items.addAll(newItems);
+        } else {
+          final newItem = Item.fromJson(responseData['item']);
+          _items.add(newItem);
+        }
         notifyListeners();
       } else {
         final errorMessage =
