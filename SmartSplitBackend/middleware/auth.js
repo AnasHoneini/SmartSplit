@@ -13,8 +13,7 @@ const auth = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
-    // eslint-disable-next-line no-unused-vars
-  } catch (error) {
+  } catch {
     res.status(401).json({ message: 'Token is not valid' });
   }
 };

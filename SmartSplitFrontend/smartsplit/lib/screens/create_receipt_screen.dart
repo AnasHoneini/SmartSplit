@@ -12,6 +12,7 @@ class CreateReceiptScreen extends StatefulWidget {
 }
 
 class CreateReceiptScreenState extends State<CreateReceiptScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _restaurantNameController = TextEditingController();
   final _receiptNameController = TextEditingController();
   String? _selectedGroup;
@@ -47,6 +48,13 @@ class CreateReceiptScreenState extends State<CreateReceiptScreen> {
   }
 
   Future<void> _createReceipt() async {
+    if (!_formKey.currentState!.validate() || _selectedGroup == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final receiptProvider =
         Provider.of<ReceiptProvider>(context, listen: false);
@@ -98,74 +106,99 @@ class CreateReceiptScreenState extends State<CreateReceiptScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Receipt'),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.blue.shade800,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Create a New Receipt',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _restaurantNameController,
-              decoration: InputDecoration(
-                labelText: 'Restaurant Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Create a New Receipt',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade800,
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _receiptNameController,
-              decoration: InputDecoration(
-                labelText: 'Receipt Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            DropdownButtonFormField<String>(
-              value: _selectedGroup,
-              decoration: InputDecoration(
-                labelText: 'Select Group',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-              items: groups.map((group) {
-                return DropdownMenuItem<String>(
-                  value: group.groupName,
-                  child: Text(group.groupName),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedGroup = value;
-                });
-              },
-            ),
-            const SizedBox(height: 20),
-            _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : ElevatedButton(
-                    onPressed: _createReceipt,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.teal,
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    child: const Text('Create Receipt'),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _restaurantNameController,
+                decoration: InputDecoration(
+                  labelText: 'Restaurant Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-          ],
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a restaurant name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: _receiptNameController,
+                decoration: InputDecoration(
+                  labelText: 'Receipt Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a receipt name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                value: _selectedGroup,
+                decoration: InputDecoration(
+                  labelText: 'Select Group',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                items: groups.map((group) {
+                  return DropdownMenuItem<String>(
+                    value: group.groupName,
+                    child: Text(group.groupName),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedGroup = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a group';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ElevatedButton(
+                      onPressed: _createReceipt,
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.blue.shade800,
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      child: const Text('Create Receipt'),
+                    ),
+            ],
+          ),
         ),
       ),
     );

@@ -21,12 +21,6 @@ const validateCreateUser = [
     .trim()
     .escape()
     .withMessage('Password must be at least 5 characters long'),
-  check('profilePicture')
-    .optional()
-    .isURL()
-    .trim()
-    .escape()
-    .withMessage('Valid URL is required for profile picture'),
 ];
 
 const validateUpdateUser = [
@@ -43,12 +37,6 @@ const validateUpdateUser = [
     .trim()
     .escape()
     .withMessage('Password must be at least 5 characters long'),
-  check('profilePicture')
-    .optional()
-    .isURL()
-    .trim()
-    .escape()
-    .withMessage('Valid URL is required for profile picture'),
 ];
 
 const validateCreateReceipt = [
@@ -88,12 +76,7 @@ const validateCreateGroup = [
     .notEmpty()
     .withMessage('Group name is required'),
   check('description').optional().trim().escape(),
-  check('profilePicture')
-    .optional()
-    .isURL()
-    .trim()
-    .escape()
-    .withMessage('Valid URL is required for profile picture'),
+
   check('createdBy')
     .trim()
     .escape()

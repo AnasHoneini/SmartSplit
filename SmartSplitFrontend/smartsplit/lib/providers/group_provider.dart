@@ -24,8 +24,8 @@ class GroupsProvider with ChangeNotifier {
     if (isTokenExpired(token)) {
       await Provider.of<AuthProvider>(navigatorKey.currentContext!,
               listen: false)
-          .logout();
-      return;
+          .logoutUserDueToExpiredToken();
+      throw Exception('Token is expired');
     }
     request.headers.addAll({
       'Content-Type': 'application/json',
@@ -166,5 +166,56 @@ class GroupsProvider with ChangeNotifier {
 
   List<String> getMembers(String groupName) {
     return _groupMembers[groupName] ?? [];
+  }
+
+  Future<List<String>> fetchAllEmails(String query) async {
+    final url = Uri.parse('http://10.0.2.2:5001/api/emails/all');
+    final request = http.Request('GET', url);
+    await _addAuthHeaders(request);
+
+    try {
+      final response = await request.send();
+      if (response.statusCode == 200) {
+        final List<dynamic> emailsList =
+            json.decode(await response.stream.bytesToString());
+        return emailsList
+            .map((email) => email as String)
+            .where((email) => email.contains(query))
+            .toList();
+      } else {
+        throw Exception('Failed to load emails');
+      }
+    } catch (e) {
+      throw Exception('Failed to load emails: ${e.toString()}');
+    }
+  }
+
+  Future<void> deleteMemberFromGroup(
+      Map<String, dynamic> deleteMemberData) async {
+    final groupName = Uri.encodeComponent(deleteMemberData['groupName']);
+    final url =
+        Uri.parse('http://10.0.2.2:5001/api/group/$groupName/deleteMember');
+    final request = http.Request('DELETE', url)
+      ..body = json.encode(deleteMemberData)
+      ..headers['Content-Type'] = 'application/json';
+    await _addAuthHeaders(request);
+
+    try {
+      final response = await request.send();
+      if (response.statusCode == 200) {
+        if (_groupMembers.containsKey(deleteMemberData['groupName'])) {
+          _groupMembers[deleteMemberData['groupName']]!
+              .remove(deleteMemberData['userEmail']);
+        }
+        notifyListeners();
+      } else {
+        final responseBody = await response.stream.bytesToString();
+        final decodedResponse = json.decode(responseBody);
+        throw Exception(
+            decodedResponse['message'] ?? 'Failed to delete member');
+      }
+    } catch (e) {
+      throw Exception('Failed to delete member: ${e.toString()}');
+    }
   }
 }

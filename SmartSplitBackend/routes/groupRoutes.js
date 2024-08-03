@@ -10,6 +10,7 @@ const {
   addMemberToGroup,
   getUserGroups,
   getReceiptsByGroupName,
+  deleteMemberFromGroup,
 } = require('../controllers/groupController');
 
 const router = express.Router();
@@ -22,5 +23,6 @@ router.get('/group/:groupName/members', auth, getMembersByGroupName);
 router.post('/group/:groupName/addMember', auth, addMemberToGroup);
 router.get('/group/user/:userEmail', auth, getUserGroups);
 router.get('/group/:groupName/receipts', auth, getReceiptsByGroupName);
+router.delete('/group/:groupName/deleteMember', auth, deleteMemberFromGroup);
 
 module.exports = router;

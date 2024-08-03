@@ -97,7 +97,10 @@ const updateItemByName = async (req, res) => {
 
 const deleteItemByName = async (req, res) => {
   try {
-    const item = await Item.findOne({ name: req.params.name }).exec();
+    const { name } = req.params;
+    const { userEmail } = req.body;
+
+    const item = await Item.findOne({ name, userEmail }).exec();
     if (!item) {
       return res.status(404).json({ message: 'Item not found' });
     }
@@ -116,6 +119,7 @@ const getItemsByReceiptName = async (req, res) => {
   try {
     const items = await Item.find({
       receiptName: req.params.receiptName,
+      deletedAt: { $exists: false },
     }).exec();
     return res.status(200).json(items);
   } catch (err) {

@@ -8,9 +8,6 @@ const groupSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  profilePicture: {
-    type: String,
-  },
   createdBy: {
     type: String,
     ref: 'User',

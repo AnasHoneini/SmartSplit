@@ -1,10 +1,8 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/group_provider.dart';
-import 'groupDetailsScreen .dart';
+import 'groupDetailsScreen.dart';
 
 class GroupsScreen extends StatefulWidget {
   const GroupsScreen({super.key});
@@ -60,13 +58,6 @@ class _GroupsScreenState extends State<GroupsScreen> {
                         horizontal: 15,
                       ),
                       child: ListTile(
-                        // leading: CircleAvatar(
-                        //   backgroundImage: NetworkImage(
-                        //     group.profilePicture.isNotEmpty
-                        //         ? group.profilePicture
-                        //         : 'https://via.placeholder.com/150',
-                        //   ),
-                        // ),
                         title: Text(
                           group.groupName,
                           style: const TextStyle(
