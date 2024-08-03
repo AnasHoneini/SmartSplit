@@ -3,6 +3,8 @@ const UserGroup = require('../models/userGroupModel');
 const GroupReceipt = require('../models/groupReceiptModel');
 const Receipt = require('../models/receiptModel');
 const User = require('../models/userModel');
+const Item = require('../models/itemModel');
+
 const {
   validateCreateGroup,
   validateAddMemberToGroup,
@@ -13,8 +15,7 @@ const createGroup = [
   validateCreateGroup,
   validate,
   async (req, res) => {
-    const { groupName, description, profilePicture, createdBy, isActive } =
-      req.body;
+    const { groupName, description, createdBy, isActive } = req.body;
 
     try {
       const user = await User.findOne({ email: createdBy });
@@ -24,7 +25,6 @@ const createGroup = [
       const group = await Group.create({
         groupName,
         description,
-        profilePicture,
         createdBy,
         isActive,
       });
@@ -65,7 +65,6 @@ const updateGroupByName = async (req, res) => {
 
     if (req.body.groupName) group.groupName = req.body.groupName;
     if (req.body.description) group.description = req.body.description;
-    if (req.body.profilePicture) group.profilePicture = req.body.profilePicture;
     if (req.body.isActive !== undefined) group.isActive = req.body.isActive;
     group.updatedAt = new Date();
 
@@ -99,6 +98,7 @@ const getMembersByGroupName = async (req, res) => {
   try {
     const group = await Group.findOne({
       groupName: req.params.groupName,
+      deletedAt: { $exists: false },
     }).exec();
     if (!group) {
       return res.status(404).json({ message: 'Group not found' });
@@ -106,6 +106,7 @@ const getMembersByGroupName = async (req, res) => {
 
     const userGroups = await UserGroup.find({
       groupName: req.params.groupName,
+      deletedAt: { $exists: false },
     }).exec();
     const userEmails = userGroups.map((ug) => ug.userEmail);
     const users = await User.find({ email: { $in: userEmails } }).exec();
@@ -184,6 +185,53 @@ const getReceiptsByGroupName = async (req, res) => {
   }
 };
 
+const deleteMemberFromGroup = async (req, res) => {
+  const { groupName, userEmail } = req.body;
+
+  try {
+    const group = await Group.findOne({ groupName }).exec();
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    const userGroup = await UserGroup.findOne({ groupName, userEmail }).exec();
+    if (!userGroup) {
+      return res.status(404).json({ message: 'Member not found in the group' });
+    }
+
+    const userItems = await Item.find({
+      groupName,
+      userEmail,
+      deletedAt: { $exists: false },
+    }).exec();
+    if (userItems.length > 0) {
+      console.error(
+        'User has items linked to their name and cannot be deleted.'
+      );
+      return res.status(400).json({
+        message: 'User has items linked to their name and cannot be deleted.',
+      });
+    }
+
+    userGroup.deletedAt = new Date();
+    await userGroup.save();
+
+    await Item.updateMany(
+      { userEmail, groupName },
+      { $set: { deletedAt: new Date() } }
+    ).exec();
+
+    return res
+      .status(200)
+      .json({ message: 'Member removed from group successfully!' });
+  } catch (err) {
+    console.error('Error deleting member:', err);
+    return res
+      .status(500)
+      .json({ message: 'Failed to delete member', error: err.message });
+  }
+};
+
 module.exports = {
   createGroup,
   getGroupByName,
@@ -193,4 +241,5 @@ module.exports = {
   addMemberToGroup,
   getUserGroups,
   getReceiptsByGroupName,
+  deleteMemberFromGroup,
 };

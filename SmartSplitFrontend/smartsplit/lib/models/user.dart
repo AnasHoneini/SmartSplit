@@ -2,13 +2,13 @@ class User {
   final String firstName;
   final String lastName;
   final String email;
-  final String profilePicture;
+  DateTime? deletedAt;
 
   User({
     required this.firstName,
     required this.lastName,
     required this.email,
-    required this.profilePicture,
+    this.deletedAt,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -16,7 +16,8 @@ class User {
       firstName: json['firstName'],
       lastName: json['lastName'],
       email: json['email'],
-      profilePicture: json['profilePicture'],
+      deletedAt:
+          json['deletedAt'] != null ? DateTime.parse(json['deletedAt']) : null,
     );
   }
 }

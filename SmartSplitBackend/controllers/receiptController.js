@@ -102,7 +102,7 @@ const getUserReceipts = async (req, res) => {
       receipts.map(async (receipt) => {
         const items = await Item.find({
           receiptName: receipt.receiptName,
-          userEmail: userEmail,
+          deletedAt: { $exists: false },
         }).exec();
 
         const totalPrice = items.reduce(
@@ -111,12 +111,18 @@ const getUserReceipts = async (req, res) => {
         );
 
         return {
-          receipt,
+          receipt: {
+            receiptName: receipt.receiptName,
+            restaurantName: receipt.restaurantName,
+            createdAt: receipt.createdAt,
+            updatedAt: receipt.updatedAt,
+            deletedAt: receipt.deletedAt,
+          },
           totalPrice,
+          items,
         };
       })
     );
-
     res.status(200).json(receiptData);
   } catch (err) {
     console.error(err);

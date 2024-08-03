@@ -9,7 +9,7 @@ const {
 
 const generateToken = (user) => {
   return jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-    expiresIn: '10m',
+    expiresIn: '30m',
   });
 };
 
@@ -17,7 +17,7 @@ const createUser = [
   validateCreateUser,
   validate,
   async (req, res) => {
-    const { firstName, lastName, email, password, profilePicture } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
     try {
       const duplicateUser = await User.findOne({ email }).exec();
@@ -31,7 +31,6 @@ const createUser = [
         lastName,
         email,
         passwordHash: hashedPassword,
-        profilePicture,
       });
 
       const token = generateToken(user);
@@ -95,18 +94,12 @@ const updateUserByEmail = [
       if (req.body.lastName) {
         user.lastName = req.body.lastName;
       }
-      if (req.body.email) {
-        user.email = req.body.email;
-      }
       if (req.body.password) {
         user.passwordHash = await bcrypt.hash(req.body.password, 10);
       }
-      if (req.body.profilePicture) {
-        user.profilePicture = req.body.profilePicture;
-      }
       user.updatedAt = new Date();
       await user.save();
-      res.status(200).json({ message: 'User updated successfully!' });
+      res.status(200).json(user);
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
@@ -127,10 +120,21 @@ const deleteUserByEmail = async (req, res) => {
   }
 };
 
+const getAllUserEmails = async (req, res) => {
+  try {
+    const users = await User.find({}, 'email').exec();
+    const emails = users.map((user) => user.email);
+    res.status(200).json(emails);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
   getUserByEmail,
   deleteUserByEmail,
   updateUserByEmail,
+  getAllUserEmails,
 };

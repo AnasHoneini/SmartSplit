@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Password is required!'],
   },
-  profilePicture: { type: String },
   deletedAt: { type: Date },
   updatedAt: { type: Date, default: Date.now() },
   createdAt: { type: Date, default: Date.now() },
