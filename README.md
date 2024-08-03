@@ -51,8 +51,8 @@ SmartSplit is a mobile application designed to simplify bill splitting among fri
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/smartsplit.git
-   cd smartsplit
+   git clone https://github.com/AnasHoneini/SmartSplit.git
+   cd SmartSplitFrontend\smartsplit\
    ```
    
 2. **Install dependencies:**
@@ -78,7 +78,7 @@ SmartSplit is a mobile application designed to simplify bill splitting among fri
 
 1. **Navigate to the backend directory:**
     ```bash
-    cd backend
+    cd SmartSplitBackend
     ```
     
 2. **Install dependencies:**
