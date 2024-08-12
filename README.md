@@ -12,7 +12,18 @@ SmartSplit is a mobile application designed to simplify bill splitting among fri
 
 ## Screenshots
 
-[screenshots of the app]
+### Main Screen
+![Main Screen](./screenshots/main.png)
+
+### Groups Screen
+![Groups Screen](./screenshots/groups.png)
+
+### Items Screen
+![Items Screen](./screenshots/items.png)
+
+### History Screen
+![History Screen](./screenshots/history.png)
+
 
 ## Prerequisites
 
