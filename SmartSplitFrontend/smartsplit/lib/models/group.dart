@@ -16,7 +16,6 @@ class Group {
     required this.isActive,
     required this.createdAt,
     required this.updatedAt,
-    this.deletedAt,
   });
 
   factory Group.fromJson(Map<String, dynamic> json) {
@@ -28,8 +27,6 @@ class Group {
       isActive: json['isActive'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      deletedAt:
-          json['deletedAt'] != null ? DateTime.parse(json['deletedAt']) : null,
     );
   }
 }

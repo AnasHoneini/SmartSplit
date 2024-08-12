@@ -11,10 +11,6 @@ const userGroupSchema = new mongoose.Schema({
     ref: 'Group',
     required: [true, 'Group is required!'],
   },
-  deletedAt: {
-    type: Date,
-    default: null,
-  },
 });
 
 module.exports = mongoose.model('UserGroup', userGroupSchema);

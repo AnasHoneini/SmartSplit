@@ -28,6 +28,20 @@ class _AddItemDialogState extends State<AddItemDialog> {
   bool _isShared = false;
   List<String> _sharedWith = [];
 
+  @override
+  void initState() {
+    super.initState();
+    _populateMemberList();
+  }
+
+  void _populateMemberList() {
+    final groupsProvider = Provider.of<GroupsProvider>(context, listen: false);
+    final members = groupsProvider.getMembers(widget.group.groupName);
+    if (!members.contains(widget.group.createdBy)) {
+      members.add(widget.group.createdBy);
+    }
+  }
+
   Future<void> _addItem() async {
     final name = _itemNameController.text.trim();
     final price = double.tryParse(_itemPriceController.text.trim());
@@ -72,7 +86,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Item added successfully!')),
       );
-      Navigator.pop(context); // Close the dialog after adding the item
+      Navigator.pop(context);
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $error')),
@@ -88,6 +102,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
   Widget build(BuildContext context) {
     final groupsProvider = Provider.of<GroupsProvider>(context);
     final members = groupsProvider.getMembers(widget.group.groupName);
+    if (!members.contains(widget.group.createdBy)) {
+      members.add(widget.group.createdBy);
+    }
 
     return AlertDialog(
       title: const Text('Add Item'),

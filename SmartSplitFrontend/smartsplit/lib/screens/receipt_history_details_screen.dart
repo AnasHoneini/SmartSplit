@@ -59,6 +59,12 @@ class _ReceiptHistoryDetailsScreenState
       appBar: AppBar(
         title: Text(widget.receipt.receiptName),
         backgroundColor: Colors.blue.shade800,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())

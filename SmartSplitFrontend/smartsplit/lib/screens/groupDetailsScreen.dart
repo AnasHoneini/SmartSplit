@@ -25,6 +25,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
     final groupsProvider = Provider.of<GroupsProvider>(context, listen: false);
     await groupsProvider.fetchGroupMembers(widget.group.groupName);
     await groupsProvider.fetchGroupReceipts(widget.group.groupName);
+    setState(() {});
   }
 
   void _showAddMemberDialog() {
@@ -213,6 +214,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
 
     try {
       await groupsProvider.addMemberToGroup(addMemberData);
+      await groupsProvider.fetchGroupMembers(widget.group.groupName);
       _memberEmailController.clear();
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -252,7 +254,9 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                 ),
               ),
               suggestionsCallback: (pattern) async {
-                return await groupsProvider.fetchAllEmails(pattern);
+                final creatorEmail = widget.group.createdBy;
+                return await groupsProvider.fetchAllEmails(
+                    pattern, creatorEmail);
               },
               itemBuilder: (context, String suggestion) {
                 return ListTile(

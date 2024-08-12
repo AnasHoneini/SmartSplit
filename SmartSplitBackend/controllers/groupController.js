@@ -100,6 +100,7 @@ const getMembersByGroupName = async (req, res) => {
       groupName: req.params.groupName,
       deletedAt: { $exists: false },
     }).exec();
+
     if (!group) {
       return res.status(404).json({ message: 'Group not found' });
     }
@@ -108,10 +109,14 @@ const getMembersByGroupName = async (req, res) => {
       groupName: req.params.groupName,
       deletedAt: { $exists: false },
     }).exec();
-    const userEmails = userGroups.map((ug) => ug.userEmail);
-    const users = await User.find({ email: { $in: userEmails } }).exec();
 
-    return res.status(200).json(users);
+    const userEmails = userGroups.map((ug) => ug.userEmail);
+    userEmails.push(group.createdBy);
+
+    const users = await User.find({ email: { $in: userEmails } }).exec();
+    const emails = users.map((user) => user.email);
+
+    return res.status(200).json(emails);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

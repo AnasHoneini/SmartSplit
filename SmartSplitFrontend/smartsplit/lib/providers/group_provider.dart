@@ -130,8 +130,8 @@ class GroupsProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         final List<dynamic> membersList =
             json.decode(await response.stream.bytesToString());
-        _groupMembers[groupName] =
-            membersList.map((json) => json['email'] as String).toList();
+        _groupMembers[groupName] = membersList.cast<String>();
+
         notifyListeners();
       } else {
         throw Exception('Failed to load group members');
@@ -165,10 +165,11 @@ class GroupsProvider with ChangeNotifier {
   }
 
   List<String> getMembers(String groupName) {
-    return _groupMembers[groupName] ?? [];
+    final members = _groupMembers[groupName] ?? [];
+    return members;
   }
 
-  Future<List<String>> fetchAllEmails(String query) async {
+  Future<List<String>> fetchAllEmails(String query, String creatorEmail) async {
     final url = Uri.parse('http://10.0.2.2:5001/api/emails/all');
     final request = http.Request('GET', url);
     await _addAuthHeaders(request);
@@ -180,7 +181,7 @@ class GroupsProvider with ChangeNotifier {
             json.decode(await response.stream.bytesToString());
         return emailsList
             .map((email) => email as String)
-            .where((email) => email.contains(query))
+            .where((email) => email.contains(query) && email != creatorEmail)
             .toList();
       } else {
         throw Exception('Failed to load emails');
